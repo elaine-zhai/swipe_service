@@ -118,7 +118,7 @@ logger = logging.getLogger(__name__)
 logger.addFilter(CorrelationIdFilter())  
     
 
-# USER_SERVICE_URL = "http://localhost:8002"
+USER_SERVICE_URL = "http://localhost:8002"
 
 # === Database Dependency ===
 def get_db():
