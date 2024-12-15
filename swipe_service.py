@@ -23,7 +23,6 @@ from pydantic import BaseModel
 from models import Swipe, User, Transaction, Points
 from models.database import SessionLocal
 from decouple import config
-from auth_utils import validate_jwt_token
 import logging
 from contextvars import ContextVar
 from starlette.middleware.base import BaseHTTPMiddleware
