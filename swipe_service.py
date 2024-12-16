@@ -118,7 +118,7 @@ logger = logging.getLogger(__name__)
 logger.addFilter(CorrelationIdFilter())  
     
 
-USER_SERVICE_URL = "http://localhost:8002"
+# USER_SERVICE_URL = "http://localhost:8002"
 
 # === Database Dependency ===
 def get_db():
@@ -203,11 +203,11 @@ def donate_swipe(request: Request, donate_request: DonateSwipeRequest):
     user_info = request.state.user    
     donor_id = donate_request.donor_id
     swipes = donate_request.current_swipes  
-    # cor_id = correlation_id.get("N/A")
-    logger.info(f"Processing donation for donor_id: {donor_id} with Correlation ID: {correlation_id.get('N/A')}")
+    cor_id = correlation_id.get("N/A")
+    logger.info(f"Processing donation for donor_id: {donor_id} with Correlation ID: {cor_id}")
 
     if user_info.get("sub") != donor_id:
-        logger.info(f"Processing donation for donor_id: {donor_id} with Correlation ID: {correlation_id.get('N/A')}")
+        logger.error(f"Donor not found for donor_id: {donor_id}, Correlation ID: {cor_id}")
         raise HTTPException(
             status_code=403, detail="You are not authorized to donate on behalf of this user"
         )
@@ -216,10 +216,7 @@ def donate_swipe(request: Request, donate_request: DonateSwipeRequest):
     auth_header = request.headers.get("Authorization")
     response = requests.get(
         f"http://localhost:8001/users/{donor_id}",
-        headers={
-            "Authorization": auth_header,
-            "X-Correlation-ID": correlation_id.get("N/A"),
-        }
+        headers={"Authorization": auth_header, "X-Correlation-ID": cor_id}
     )
     if response.status_code != 200:
         raise HTTPException(status_code=400, detail="Donor not found")
@@ -248,7 +245,7 @@ def donate_swipe(request: Request, donate_request: DonateSwipeRequest):
         params={"is_relative": True},
         headers={
                 "Authorization": auth_header,
-                "X-Correlation-ID": correlation_id.get("N/A"),
+                "X-Correlation-ID": cor_id  
             }        
     )
     if update_response.status_code != 200:
@@ -315,7 +312,7 @@ def claim_swipe(request: Request, claim_request: ReceiveSwipeRequest):
                 params={"is_relative": "true"},
                 headers={
                     "Authorization": auth_header,
-                    "X-Correlation-ID": correlation_id.get("N/A"),
+                    "X-Correlation-ID": cor_id  
                 }
             )
             recipient_update_response = requests.put(
@@ -324,7 +321,7 @@ def claim_swipe(request: Request, claim_request: ReceiveSwipeRequest):
                 params={"is_relative": "true"},
                 headers={
                     "Authorization": auth_header,
-                    "X-Correlation-ID": correlation_id.get("N/A"),
+                    "X-Correlation-ID": cor_id  
                 }
             )
             if donor_update_response.status_code != 200 or recipient_update_response.status_code != 200:
@@ -360,7 +357,7 @@ def donate_points(request: Request, donate_request: DonatePointsRequest):
         f"http://localhost:8001/users/{donor_id}",
         headers={
             "Authorization": auth_header,
-            "X-Correlation-ID": correlation_id.get("N/A"),
+            "X-Correlation-ID": cor_id 
         }
     )
     if response.status_code != 200:
@@ -386,7 +383,7 @@ def donate_points(request: Request, donate_request: DonatePointsRequest):
         params={"is_relative": "true"},
         headers={
             "Authorization": auth_header,
-            "X-Correlation-ID": correlation_id.get("N/A"),
+            "X-Correlation-ID": cor_id  
         }
     )
     if update_response.status_code != 200:
@@ -436,7 +433,7 @@ def claim_points(request: Request, claim_request: ReceivePointsRequest):
         params={"is_relative": "true"},
         headers={
             "Authorization": auth_header,
-            "X-Correlation-ID": correlation_id.get("N/A"),
+            "X-Correlation-ID": cor_id  
         }
     )
 
