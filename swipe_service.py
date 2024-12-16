@@ -54,8 +54,9 @@ class AuthorizationMiddleware(BaseHTTPMiddleware):
         logger.info(f"CorrelationID: {cor_id} | Headers: {dict(request.headers)}")
 
         # Public paths that don't require authentication
-        public_paths = ["/", "/docs", "/openapi.json", "/login", "/admin/users", "/admin/update-user"] # DELETE LAST PATH, USED FOR TESTING PURPOSES
-        
+        # public_paths = ["/", "/docs", "/openapi.json", "/login", "/admin/users", "/admin/update-user"] # DELETE LAST PATH, USED FOR TESTING PURPOSES
+        public_paths = ["*"]
+
         if request.url.path not in public_paths:
             auth_header = request.headers.get('Authorization')
             if not auth_header:
