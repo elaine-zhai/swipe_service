@@ -1,0 +1,350 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/swipes/donate": {
+      "post": {
+        "summary": "Donate Swipe",
+        "operationId": "donate_swipe_swipes_donate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DonateSwipeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/swipes/donated": {
+      "get": {
+        "summary": "Get Donated Swipes",
+        "operationId": "get_donated_swipes_swipes_donated_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DonatedSwipesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/swipes/claim": {
+      "post": {
+        "summary": "Claim Swipe",
+        "operationId": "claim_swipe_swipes_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceiveSwipeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/points/donate": {
+      "post": {
+        "summary": "Donate Points",
+        "operationId": "donate_points_points_donate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DonatePointsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/points/claim": {
+      "post": {
+        "summary": "Claim Points",
+        "operationId": "claim_points_points_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceivePointsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DonatePointsRequest": {
+        "properties": {
+          "donor_id": {
+            "type": "string",
+            "title": "Donor Id"
+          },
+          "points": {
+            "type": "integer",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "donor_id",
+          "points"
+        ],
+        "title": "DonatePointsRequest"
+      },
+      "DonateSwipeRequest": {
+        "properties": {
+          "donor_id": {
+            "type": "string",
+            "title": "Donor Id"
+          },
+          "current_swipes": {
+            "type": "integer",
+            "title": "Current Swipes"
+          },
+          "is_relative": {
+            "type": "boolean",
+            "title": "Is Relative",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "donor_id",
+          "current_swipes"
+        ],
+        "title": "DonateSwipeRequest"
+      },
+      "DonatedSwipe": {
+        "properties": {
+          "swipe_id": {
+            "type": "integer",
+            "title": "Swipe Id"
+          },
+          "uni": {
+            "type": "string",
+            "title": "Uni"
+          },
+          "is_donated": {
+            "type": "boolean",
+            "title": "Is Donated"
+          }
+        },
+        "type": "object",
+        "required": [
+          "swipe_id",
+          "uni",
+          "is_donated"
+        ],
+        "title": "DonatedSwipe"
+      },
+      "DonatedSwipesResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "donated_swipes": {
+            "items": {
+              "$ref": "#/components/schemas/DonatedSwipe"
+            },
+            "type": "array",
+            "title": "Donated Swipes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "donated_swipes"
+        ],
+        "title": "DonatedSwipesResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ReceivePointsRequest": {
+        "properties": {
+          "recipient_id": {
+            "type": "string",
+            "title": "Recipient Id"
+          },
+          "points": {
+            "type": "integer",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "recipient_id",
+          "points"
+        ],
+        "title": "ReceivePointsRequest"
+      },
+      "ReceiveSwipeRequest": {
+        "properties": {
+          "recipient_id": {
+            "type": "string",
+            "title": "Recipient Id"
+          },
+          "swipes_to_claim": {
+            "type": "integer",
+            "title": "Swipes To Claim"
+          }
+        },
+        "type": "object",
+        "required": [
+          "recipient_id",
+          "swipes_to_claim"
+        ],
+        "title": "ReceiveSwipeRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

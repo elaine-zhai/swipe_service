@@ -121,7 +121,7 @@ logger = logging.getLogger(__name__)
 logger.addFilter(CorrelationIdFilter())  
     
 
-USER_SERVICE_URL = "http://localhost:8002"
+# USER_SERVICE_URL = "http://localhost:8002"
 
 # === Database Dependency ===
 def get_db():
@@ -386,7 +386,7 @@ def donate_points(request: Request, donate_request: DonatePointsRequest):
         params={"is_relative": "true"},
         headers={
             "Authorization": auth_header,
-            "X-Correlation-ID": cor_id  #
+            "X-Correlation-ID": cor_id  
         }
     )
     if update_response.status_code != 200:
