@@ -34,6 +34,9 @@ load_dotenv()
 # === App Initialization and Middleware ===
 app = FastAPI()
 
+user_service_url = os.getenv("USER_SERVICE_URL")
+composite_service_url = os.getenv("COMPOSITE_SERVICE_URL")
+
 # Correlation ID Middleware
 class CorrelationIDMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -91,7 +94,7 @@ app.add_middleware(CorrelationIDMiddleware)
 app.add_middleware(AuthorizationMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], 
+    allow_origins=["http://localhost:3000",f"{composite_service_url}"], 
     allow_credentials=True,
     allow_methods=["*"],  
     allow_headers=["*"],  
@@ -215,7 +218,7 @@ def donate_swipe(request: Request, donate_request: DonateSwipeRequest):
     # Forward the Authorization header to the /users endpoint
     auth_header = request.headers.get("Authorization")
     response = requests.get(
-        f"http://localhost:8001/users/{donor_id}",
+        f"{user_service_url}/users/{donor_id}",
         headers={"Authorization": auth_header, "X-Correlation-ID": cor_id}
     )
     if response.status_code != 200:
@@ -240,7 +243,7 @@ def donate_swipe(request: Request, donate_request: DonateSwipeRequest):
 
         db.commit()
     update_response = requests.put(
-        f"http://localhost:8001/users/{donor_id}",
+        f"{user_service_url}/users/{donor_id}",
         json={"current_swipes": -swipes},
         params={"is_relative": True},
         headers={
@@ -307,7 +310,7 @@ def claim_swipe(request: Request, claim_request: ReceiveSwipeRequest):
             recipient.swipes_received += 1
             db.commit()
             donor_update_response = requests.put(
-                f"http://localhost:8001/users/{donor_id}",
+                f"{user_service_url}/users/{donor_id}",
                 json={"swipes_given": 1},
                 params={"is_relative": "true"},
                 headers={
@@ -316,7 +319,7 @@ def claim_swipe(request: Request, claim_request: ReceiveSwipeRequest):
                 }
             )
             recipient_update_response = requests.put(
-                f"http://localhost:8001/users/{recipient_id}",
+                f"{user_service_url}/users/{recipient_id}",
                 json={"current_swipes": 1, "swipes_received": 1},
                 params={"is_relative": "true"},
                 headers={
@@ -354,7 +357,7 @@ def donate_points(request: Request, donate_request: DonatePointsRequest):
 
     # Fetch donor information
     response = requests.get(
-        f"http://localhost:8001/users/{donor_id}",
+        f"{user_service_url}/users/{donor_id}",
         headers={
             "Authorization": auth_header,
             "X-Correlation-ID": cor_id 
@@ -378,7 +381,7 @@ def donate_points(request: Request, donate_request: DonatePointsRequest):
 
     # Update donor's points using the centralized function
     update_response = requests.put(
-        f"http://localhost:8001/users/{donor_id}",
+        f"{user_service_url}/users/{donor_id}",
         json={"points": -points_to_donate, "points_given": points_to_donate},
         params={"is_relative": "true"},
         headers={
@@ -428,7 +431,7 @@ def claim_points(request: Request, claim_request: ReceivePointsRequest):
         db.commit()  
 
     update_response = requests.put(
-        f"http://localhost:8001/users/{recipient_id}",
+        f"{user_service_url}/users/{recipient_id}",
         json={"points": points, "points_received": points},
         params={"is_relative": "true"},
         headers={
