@@ -55,7 +55,8 @@ class AuthorizationMiddleware(BaseHTTPMiddleware):
 
         # Public paths that don't require authentication
         # public_paths = ["/", "/docs", "/openapi.json", "/login", "/admin/users", "/admin/update-user"] # DELETE LAST PATH, USED FOR TESTING PURPOSES
-        public_paths = ["*"]
+        # public_paths = ["*"]
+        public_paths = ["/", "/docs", "/openapi.json", "/login", "/favicon.ico"]
 
         if request.url.path not in public_paths:
             auth_header = request.headers.get('Authorization')
